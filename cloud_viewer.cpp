@@ -56,7 +56,7 @@ viewerOneOff (pcl::visualization::PCLVisualizer& viewer)
 {	
 
     viewer.setBackgroundColor (0,0,0); // black background
-	viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,3,"cloud"); // size of point clouds
+	viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,2,"cloud"); // size of point clouds
 	viewer.setRepresentationToSurfaceForAllActors();
 	viewer.addCoordinateSystem (4);
 	viewer.initCameraParameters ();
@@ -146,51 +146,41 @@ int main (int argc, char **argv)
 */
 
 	
-
-
 	// declare the point cloud class
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);	
-	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_II (new pcl::PointCloud<pcl::PointXYZRGBA>);	
-	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_III (new pcl::PointCloud<pcl::PointXYZRGBA>);	
+	
 	pcl::PointXYZRGBA sample;
 
 	pcl::visualization::CloudViewer viewer("Cloud Viewer");
 
-	for(int i = 0; i < 1000; i++){
-		sample.x = i; sample.y = i; sample.z = i;
-		sample.r = 255; sample.g = 0; sample.b = 0;
-		cloud -> points.push_back(sample);
-	}
-
-	for(int i = 0; i < 1000; i++){
-		sample.x = 1000; sample.y = 1000; sample.z = i;
-		sample.r = 0; sample.g = 255; sample.b = 0;
-		cloud_II -> points.push_back(sample);
-	}
-
-	for(int i = 0; i < 1000; i++){
-		sample.x = 1000; sample.y = i; sample.z = 1000;
-		sample.r = 0; sample.g = 0; sample.b = 255;
-		cloud_III -> points.push_back(sample);
-	}
-
- 
     //blocks until the cloud is actually rendered
     //viewer.showCloud(cloud);
 	viewer.runOnVisualizationThreadOnce (viewerOneOff);
     viewer.runOnVisualizationThread (viewerPsycho);
   	
-	/*while (!viewer.wasStopped())
-    {*/
+	while (!viewer.wasStopped()){
+	//for(int i = 0; i < 1000000; i++){
+		for(int j = 0; j < 1000; j++){
+
+			int color = rand()%3;
+			sample.x = rand()%100;
+			sample.y = rand()%100;
+			sample.z = rand()%100;
+
+			if(color == 0){
+				sample.r = 255; sample.g = 0; sample.b = 0;
+			} else if(color == 1) {
+				sample.r = 0; sample.g = 255; sample.b = 0;
+			} else {
+				sample.r = 0; sample.g = 0; sample.b = 255;
+			}
+
+			cloud -> points.push_back(sample);
+		}
 		viewer.showCloud(cloud);
+		cloud -> points.clear();
 		delay();
-
-		viewer.showCloud(cloud_II);
-		delay();
-
-		viewer.showCloud(cloud_III);
-		delay();
-    //}
+	}
 
     return 0;
 }
